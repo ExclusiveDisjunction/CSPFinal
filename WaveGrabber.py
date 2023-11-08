@@ -1,3 +1,4 @@
+import pathlib as pl
 from pathlib import Path
 from pydub import AudioSegment
 import os
@@ -24,14 +25,15 @@ def GrabWaveFile(TargetFilePath: Path | None = None) -> AudioSegment:
 
     if (FilePath.suffix != ".wav"):
         MsgResult = messagebox.askquestion("File not .wav", "The provided file is not .wav, and it will be converted. Is this ok? A copy of the file with an extension of .wav will be created.")
-        if (MsgResult != "Yes"):
+        if (MsgResult != "yes"):
             return None
 
-        NewPath = os.path.basename(str(FilePath)) + FilePath.stem + ".wav"
+        NewPath = FilePath.with_suffix(".wav")
+        if os.path.exists(str(NewPath)):
+            os.remove(str(NewPath))
+        
         AudFile.export(str(NewPath), format="wav")
-
-        AudFile = GrabAudioSegment(str(NewPath))
-        FilePath = NewPath
+        AudFile = GrabAudioSegment(NewPath)
 
     return AudFile
     
@@ -63,4 +65,4 @@ def PromptFile() -> Path:
 
 
 if __name__ == "__main__":
-    GrabWaveFile()
+    print(GrabWaveFile())
