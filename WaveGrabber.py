@@ -7,9 +7,14 @@ from tkinter import filedialog
 
 # This file will prompt the user for a file, and convert it to a .wav and then return it.
 
-def GrabWaveFile() -> AudioSegment:
-    FilePath = PromptFile()
+def GrabWaveFile(TargetFilePath: Path | None = None) -> AudioSegment:
+    FilePath = None
+    if (TargetFilePath == None):
+        FilePath = PromptFile()
+    else:
+        FilePath = TargetFilePath
     AudFile = GrabAudioSegment(FilePath)
+
     if (AudFile == None):
         return None
 
