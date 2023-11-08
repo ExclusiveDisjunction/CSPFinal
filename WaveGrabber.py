@@ -10,6 +10,8 @@ from tkinter import filedialog
 def GrabWaveFile() -> AudioSegment:
     FilePath = PromptFile()
     AudFile = GrabAudioSegment(FilePath)
+    if (AudFile == None):
+        return None
 
     if (AudFile == None):
         messagebox.showinfo("The file requested could not be opened.")
@@ -30,11 +32,10 @@ def GrabWaveFile() -> AudioSegment:
     
 
 def GrabAudioSegment(FilePath: Path) -> AudioSegment:
+    if (FilePath == None):
+        return None
     Suffix = FilePath.suffix
     Suffix = Suffix.removeprefix(".")
-    
-    file = open(FilePath)
-    file.close()
 
     # This code is audioist. It wont open anything other than .wav :(
 
@@ -49,6 +50,10 @@ def GrabAudioSegment(FilePath: Path) -> AudioSegment:
 # We will have to first import a file.
 def PromptFile() -> Path:
     FilePathRaw = filedialog.askopenfilename(filetypes=[("Audio Files", "*.mp3;*.wav;*.wma;*.aac")])
+
+    if (FilePathRaw == ""):
+        return None
+    
     return Path(FilePathRaw)
 
 
