@@ -82,7 +82,3 @@ def PromptFile() -> Path:
         return None
     
     return Path(FilePathRaw)
-
-
-if __name__ == "__main__":
-    print(GrabWaveFile())

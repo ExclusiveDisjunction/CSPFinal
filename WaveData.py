@@ -1,6 +1,10 @@
 from pydub import AudioSegment
+import numpy
+import matplotlib.pyplot as plt
 import tkinter as tk
 from PIL import Image, ImageTk
+
+from WaveGrabber import GrabWaveFile
 
 def CleanWave(seg : AudioSegment) -> AudioSegment:
     chann = seg.channels
@@ -10,11 +14,25 @@ def CleanWave(seg : AudioSegment) -> AudioSegment:
     else:
         return seg
 
-def GraphWave(target: tk.Canvas, wave: AudioSegment):
-    # Graph the wave function
+def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
+    """
+        Graphs the wave function, and if target is not None, it will output that graph onto the target.
+    """
+
     ImgPath = "TotalWaveOutput.png"
 
+    # Graph the wave function
+    AudData = wave.raw_data
+    plt.plot(data=AudData)
+    plt.savefig(ImgPath)
+
     # Display that image
-    img = ImageTk.PhotoImage(Image.open(ImgPath), Image.ANTIALIAS)
-    target.background = img;
-    target.create_image(0,0,anchor=tk.NW, image=img)
+    if (target != None):
+        img = ImageTk.PhotoImage(Image.open(ImgPath), Image.ANTIALIAS)
+        target.background = img;
+        target.create_image(0,0,anchor=tk.NW, image=img)
+
+    return ImgPath
+
+if __name__ == "__main__":
+    print(GraphWave(None, GrabWaveFile(None)))
