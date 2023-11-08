@@ -9,6 +9,7 @@ Build/
 Publish/
 
 *.sln
+*.pyproj
 
 # User-specific files
 *.rsuser
