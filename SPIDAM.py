@@ -3,6 +3,20 @@ from tkinter import N, S, E, W, EW
 from tkinter import messagebox
 
 from WaveGrabber import GrabWaveFile
+from WaveData import GraphWave
+from WaveData import WaveData
+
+waveData = WaveData()
+
+
+def grabWave():
+    print(waveData.getData())
+    GrabWaveFile(waveData)
+
+
+def graphWave():
+    GraphWave(canvas, waveData.getData())
+
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -14,10 +28,14 @@ if __name__ == "__main__":
 
     TitleLbl = tk.Label(root, text="SPIDAM Program")
     SubTitleLbl = tk.Label(root, text="Please select a file to begin")
-    selfile_button = tk.Button(root, text="Select", command=GrabWaveFile)
+    # GrabWaveFile sets the data attribute inside waveData obj
+    selfile_button = tk.Button(root, text="Select", command=grabWave)
 
     TitleLbl.grid(column=0, row=0, sticky='W')
     SubTitleLbl.grid(column=0, row=1,sticky='W')
     selfile_button.grid(column=1, row=1, sticky='E', padx=10)
+
+    canvas = tk.Canvas(root)
+    graphWave()
 
     root.mainloop()

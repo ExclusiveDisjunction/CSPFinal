@@ -4,15 +4,26 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 from PIL import Image, ImageTk
 
-from WaveGrabber import GrabWaveFile
 
-def CleanWave(seg : AudioSegment) -> AudioSegment:
+class WaveData:
+    def __init__(self):
+        self.audioSegData = None
+
+    def setData(self, audioSegment):
+        self.audioSegData = audioSegment
+
+    def getData(self):
+        return self.audioSegData
+
+
+def CleanWave(seg: AudioSegment) -> AudioSegment:
     chann = seg.channels
 
-    if (chann != 1):
+    if chann != 1:
         return seg.set_channels(1)
     else:
         return seg
+
 
 def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
     """
@@ -27,12 +38,14 @@ def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
     plt.savefig(ImgPath)
 
     # Display that image
-    if (target != None):
+    if target != None:
         img = ImageTk.PhotoImage(Image.open(ImgPath), Image.ANTIALIAS)
         target.background = img;
-        target.create_image(0,0,anchor=tk.NW, image=img)
+        target.create_image(0, 0, anchor=tk.NW, image=img)
 
     return ImgPath
 
+
 if __name__ == "__main__":
+    from WaveGrabber import GrabWaveFile
     print(GraphWave(None, GrabWaveFile(None)))
