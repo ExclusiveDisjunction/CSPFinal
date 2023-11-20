@@ -6,15 +6,21 @@ from WaveGrabber import GrabWaveFile
 from WaveData import GraphWave
 from WaveData import WaveData
 
+import Log
+
 waveData = WaveData()
 
 targetCanvas = None
 
 def GrabWaveCommand():
+    Log.LogEvent("Grab Wave Command Invoked", Log.Debug)
+
     GrabWaveFile(waveData)
     GraphWaveCommand()
 
 def GraphWaveCommand():
+    Log.LogEvent("Graph Wave Command Invoked", Log.Debug)
+
     if (waveData.getData() == None or targetCanvas == None):
         return
     
@@ -22,6 +28,9 @@ def GraphWaveCommand():
 
 
 if __name__ == "__main__":
+    Log.InitLog(level=Log.Debug)
+    Log.LogEvent("Starting UI")
+
     root = tk.Tk()
     root.title("SPIDAM")
     root.geometry("500x400+400+400")
@@ -40,4 +49,6 @@ if __name__ == "__main__":
 
     targetCanvas = tk.Canvas(root)
 
+    Log.LogEvent("UI Loaded, begining Main Loop.")
     root.mainloop()
+    Log.LogEvent("Shutdown completed sucessfully.")
