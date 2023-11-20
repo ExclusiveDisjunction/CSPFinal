@@ -8,14 +8,17 @@ from WaveData import WaveData
 
 waveData = WaveData()
 
+targetCanvas = None
 
-def grabWave():
-    print(waveData.getData())
+def GrabWaveCommand():
     GrabWaveFile(waveData)
+    GraphWaveCommand()
 
-
-def graphWave():
-    GraphWave(canvas, waveData.getData())
+def GraphWaveCommand():
+    if (waveData.getData() == None or targetCanvas == None):
+        return
+    
+    GraphWave(targetCanvas, waveData.getData())
 
 
 if __name__ == "__main__":
@@ -29,13 +32,12 @@ if __name__ == "__main__":
     TitleLbl = tk.Label(root, text="SPIDAM Program")
     SubTitleLbl = tk.Label(root, text="Please select a file to begin")
     # GrabWaveFile sets the data attribute inside waveData obj
-    selfile_button = tk.Button(root, text="Select", command=grabWave)
+    selfile_button = tk.Button(root, text="Select", command=GrabWaveCommand)
 
     TitleLbl.grid(column=0, row=0, sticky='W')
     SubTitleLbl.grid(column=0, row=1,sticky='W')
     selfile_button.grid(column=1, row=1, sticky='E', padx=10)
 
-    canvas = tk.Canvas(root)
-    graphWave()
+    targetCanvas = tk.Canvas(root)
 
     root.mainloop()

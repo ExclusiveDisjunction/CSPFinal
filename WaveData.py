@@ -39,9 +39,11 @@ def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
 
     # Display that image
     if target != None:
-        img = ImageTk.PhotoImage(Image.open(ImgPath), Image.ANTIALIAS)
-        target.background = img;
+        print("Attempting to display graph...")
+        img = ImageTk.PhotoImage(Image.open(ImgPath))
+        target.background = img
         target.create_image(0, 0, anchor=tk.NW, image=img)
+        print("Image Graphed.")
 
     return ImgPath
 
