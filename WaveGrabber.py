@@ -18,8 +18,6 @@ def GrabWaveFile(waveData: WaveData, TargetFilePath: Path | None = None) -> Audi
         Ensures that a file provided will be a wave file, and either loads a file from the path provided, or will use the file browser to grab one.
     """
 
-    print("test")
-
     # Determiens the target file to load.
     FilePath = None
     if (TargetFilePath == None):
@@ -52,6 +50,7 @@ def GrabWaveFile(waveData: WaveData, TargetFilePath: Path | None = None) -> Audi
     # Set audio data to obj instead of returning to eventloop
     waveData.setData(AudFile)
     # return AudFile
+    return AudFile
 
 
 def GrabAudioSegment(FilePath: Path) -> AudioSegment:
