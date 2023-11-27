@@ -2,6 +2,7 @@ from pydub import AudioSegment
 import matplotlib.pyplot as plt
 import tkinter as tk
 from PIL import Image, ImageTk
+import numpy as np
 
 import Log
 
@@ -37,13 +38,23 @@ def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
     ImgPath = "TotalWaveOutput.png"
 
     # Graph the wave function
-    AudData = wave.raw_data
-    Log.LogEvent("Graphing wave data now.", Log.Debug)
+    AudData = list(wave.raw_data)
+    Log.LogEvent("Graphing wave data now.")
 
-    plt.plot(data=AudData)
+    # Step is FrameRate * Sample Width * 8, in Hz, so step is 1 over that number.
+
+    step = 1 / float(wave.frame_rate * wave.sample_width * 8) # Seconds
+    timeStart = 0 # Seconds
+    timeEnd = wave.duration_seconds #Seonds
+
+    for pair in (np.arange(timeStart, timeEnd, step), AudData):
+        plt.scatter(pair[0], int(pair[1]))
+
+
+    plt.plot(*AudData)
     plt.savefig(ImgPath)
 
-    Log.LogEvent("Completed making data graph.", Log.Debug)
+    Log.LogEvent("Completed making data graph.")
 
     # Display that image
     if target != None:

@@ -28,7 +28,7 @@ def GraphWaveCommand():
 
 
 if __name__ == "__main__":
-    Log.InitLog(level=Log.Debug)
+    Log.InitLog(level=Log.Info)
     Log.LogEvent("Starting UI")
 
     root = tk.Tk()
