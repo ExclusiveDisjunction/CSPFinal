@@ -7,6 +7,7 @@ from WaveData import GraphWave
 from WaveData import WaveData
 
 import Log
+import threading
 
 waveData = WaveData()
 
@@ -23,12 +24,12 @@ def GraphWaveCommand():
 
     if (waveData.getData() == None or targetCanvas == None):
         return
-    
+
     GraphWave(targetCanvas, waveData.getData())
 
 
 if __name__ == "__main__":
-    Log.InitLog(level=Log.Info)
+    Log.InitLog(level=Log.Debug)
     Log.LogEvent("Starting UI")
 
     root = tk.Tk()

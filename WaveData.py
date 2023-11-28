@@ -46,25 +46,29 @@ def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
     step = 1 / float(wave.frame_rate * wave.sample_width * 8) # Seconds
     timeStart = 0 # Seconds
     timeEnd = wave.duration_seconds #Seonds
+    Log.LogEvent(f"For plotting, the step in seconds is {step}, the start and end is ({timeStart},{timeEnd}). Array is {len(AudData)} long.")
 
-    for pair in (np.arange(timeStart, timeEnd, step), AudData):
-        plt.scatter(pair[0], int(pair[1]))
+    i = 0
+    t = timeStart
+    for point in AudData:
+        plt.plot(t, point)
+        Log.LogEvent(f"Plotted point ({t},{point}) at index {i}", Log.Debug)
+        i += 1
+        t += step
 
-
-    plt.plot(*AudData)
-    plt.savefig(ImgPath)
+    plt.savefig("TotalWaveOutput.png")
 
     Log.LogEvent("Completed making data graph.")
 
     # Display that image
     if target != None:
-        Log.LogEvent("Attempting to render graph on UI...", Log.Debug)
+        Log.LogEvent("Attempting to render graph on UI...")
 
         img = ImageTk.PhotoImage(Image.open(ImgPath))
         target.background = img
         target.create_image(0, 0, anchor=tk.NW, image=img)
         
-        Log.LogEvent("Graph rendered on UI.", Log.Debug)        
+        Log.LogEvent("Graph rendered on UI.")        
 
     return ImgPath
 
