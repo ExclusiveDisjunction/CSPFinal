@@ -38,25 +38,23 @@ def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
     ImgPath = "TotalWaveOutput.png"
 
     # Graph the wave function
-    AudData = list(wave.raw_data)
     Log.LogEvent("Graphing wave data now.")
 
     # Step is FrameRate * Sample Width * 8, in Hz, so step is 1 over that number.
 
-    step = 1 / float(wave.frame_rate * wave.sample_width * 8) # Seconds
-    timeStart = 0 # Seconds
-    timeEnd = wave.duration_seconds #Seonds
-    Log.LogEvent(f"For plotting, the step in seconds is {step}, the start and end is ({timeStart},{timeEnd}). Array is {len(AudData)} long.")
+    framerate = wave.frame_rate
+    frames = wave.raw_data
+    signal = np.frombuffer(frames, dtype=np.int16)
 
-    i = 0
-    t = timeStart
-    for point in AudData:
-        plt.plot(t, point)
-        Log.LogEvent(f"Plotted point ({t},{point}) at index {i}", Log.Debug)
-        i += 1
-        t += step
+    time = np.linspace(0, len(signal) / framerate, num=len(signal))
 
-    plt.savefig("TotalWaveOutput.png")
+    plt.figure(figsize=(10,4))
+    plt.plot(time, signal, color='b')
+    plt.title('Total Audio Waveform')
+    plt.xlabel('Time')
+    plt.ylabel('Amplitude')
+    plt.grid()
+    plt.savefig(ImgPath)
 
     Log.LogEvent("Completed making data graph.")
 
