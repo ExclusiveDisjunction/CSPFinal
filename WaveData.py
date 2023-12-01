@@ -9,13 +9,16 @@ import Log
 class WaveData:
     def __init__(self):
         self.audioSegData = None
+        self.Path = None
 
-    def setData(self, audioSegment):
+    def setData(self, audioSegment, path):
         self.audioSegData = audioSegment
+        self.Path = path
 
     def getData(self):
         return self.audioSegData
-
+    def getPath(self):
+        return self.Path
 
 def CleanWave(seg: AudioSegment) -> AudioSegment:
     Log.LogEvent("Began cleaning wave.")
@@ -29,7 +32,7 @@ def CleanWave(seg: AudioSegment) -> AudioSegment:
         return seg
 
 
-def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
+def GraphWave(root: tk.Tk | None, wave: AudioSegment) -> tk.Label:
     """
         Graphs the wave function, and if target is not None, it will output that graph onto the target.
     """
@@ -38,39 +41,40 @@ def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
     ImgPath = "TotalWaveOutput.png"
 
     # Graph the wave function
-    AudData = list(wave.raw_data)
     Log.LogEvent("Graphing wave data now.")
 
     # Step is FrameRate * Sample Width * 8, in Hz, so step is 1 over that number.
 
-    step = 1 / float(wave.frame_rate * wave.sample_width * 8) # Seconds
-    timeStart = 0 # Seconds
-    timeEnd = wave.duration_seconds #Seonds
-    Log.LogEvent(f"For plotting, the step in seconds is {step}, the start and end is ({timeStart},{timeEnd}). Array is {len(AudData)} long.")
+    framerate = wave.frame_rate
+    frames = wave.raw_data
+    signal = np.frombuffer(frames, dtype=np.int16)
 
-    i = 0
-    t = timeStart
-    for point in AudData:
-        plt.plot(t, point)
-        Log.LogEvent(f"Plotted point ({t},{point}) at index {i}", Log.Debug)
-        i += 1
-        t += step
+    time = np.linspace(0, len(signal) / framerate, num=len(signal))
 
-    plt.savefig("TotalWaveOutput.png")
+    plt.figure(figsize=(10,4))
+    plt.plot(time, signal, color='b')
+    plt.title('Total Audio Waveform')
+    plt.xlabel('Time')
+    plt.ylabel('Amplitude')
+    plt.grid()
+    plt.savefig(ImgPath)
 
     Log.LogEvent("Completed making data graph.")
 
     # Display that image
-    if target != None:
+    if root != None:
         Log.LogEvent("Attempting to render graph on UI...")
 
-        img = ImageTk.PhotoImage(Image.open(ImgPath))
-        target.background = img
-        target.create_image(0, 0, anchor=tk.NW, image=img)
-        
-        Log.LogEvent("Graph rendered on UI.")        
+        image = Image.open(ImgPath)
+        tk_image = ImageTk.PhotoImage(image)
 
-    return ImgPath
+        label = tk.Label(root, image = tk_image)
+        label.image = tk_image
+        
+        Log.LogEvent("Graph rendered on UI.") 
+        return label    
+
+    return None
 
 
 if __name__ == "__main__":
