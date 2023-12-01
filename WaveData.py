@@ -9,13 +9,16 @@ import Log
 class WaveData:
     def __init__(self):
         self.audioSegData = None
+        self.Path = None
 
-    def setData(self, audioSegment):
+    def setData(self, audioSegment, path):
         self.audioSegData = audioSegment
+        self.Path = path
 
     def getData(self):
         return self.audioSegData
-
+    def getPath(self):
+        return self.Path
 
 def CleanWave(seg: AudioSegment) -> AudioSegment:
     Log.LogEvent("Began cleaning wave.")
