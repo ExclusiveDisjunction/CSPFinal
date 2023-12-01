@@ -29,7 +29,7 @@ def CleanWave(seg: AudioSegment) -> AudioSegment:
         return seg
 
 
-def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
+def GraphWave(root: tk.Tk | None, wave: AudioSegment) -> tk.Label:
     """
         Graphs the wave function, and if target is not None, it will output that graph onto the target.
     """
@@ -59,16 +59,19 @@ def GraphWave(target: tk.Canvas | None, wave: AudioSegment) -> str:
     Log.LogEvent("Completed making data graph.")
 
     # Display that image
-    if target != None:
+    if root != None:
         Log.LogEvent("Attempting to render graph on UI...")
 
-        img = ImageTk.PhotoImage(Image.open(ImgPath))
-        target.background = img
-        target.create_image(0, 0, anchor=tk.NW, image=img)
-        
-        Log.LogEvent("Graph rendered on UI.")        
+        image = Image.open(ImgPath)
+        tk_image = ImageTk.PhotoImage(image)
 
-    return ImgPath
+        label = tk.Label(root, image = tk_image)
+        label.image = tk_image
+        
+        Log.LogEvent("Graph rendered on UI.") 
+        return label    
+
+    return None
 
 
 if __name__ == "__main__":

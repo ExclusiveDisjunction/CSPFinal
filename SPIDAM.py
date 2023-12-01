@@ -12,6 +12,8 @@ import threading
 waveData = WaveData()
 
 targetCanvas = None
+MainImageLoc = (2, 0)
+root = None
 
 def GrabWaveCommand():
     Log.LogEvent("Grab Wave Command Invoked", Log.Debug)
@@ -22,10 +24,11 @@ def GrabWaveCommand():
 def GraphWaveCommand():
     Log.LogEvent("Graph Wave Command Invoked", Log.Debug)
 
-    if (waveData.getData() == None or targetCanvas == None):
+    if (waveData.getData() == None):
         return
 
-    GraphWave(targetCanvas, waveData.getData())
+    targetCanvas = GraphWave(root, waveData.getData())
+    targetCanvas.grid(row = MainImageLoc[0], column = MainImageLoc[1], columnspan=2)
 
 
 if __name__ == "__main__":
@@ -47,8 +50,6 @@ if __name__ == "__main__":
     TitleLbl.grid(column=0, row=0, sticky='W')
     SubTitleLbl.grid(column=0, row=1,sticky='W')
     selfile_button.grid(column=1, row=1, sticky='E', padx=10)
-
-    targetCanvas = tk.Canvas(root)
 
     Log.LogEvent("UI Loaded, begining Main Loop.")
     root.mainloop()
