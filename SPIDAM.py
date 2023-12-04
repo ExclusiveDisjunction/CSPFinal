@@ -48,6 +48,7 @@ def GraphWaveCommand():
 if __name__ == "__main__":
     Log.InitLog(level=Log.Info)
     Log.LogEvent("Starting UI")
+    Log.LogEvent("<SPIDAM Program>  Copyright (C) <2023>  <Hollan Sellers, Zane Wolfe, Emilio Garcia> This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'. This is free software, and you are welcome to redistribute it under certain conditions; type `show c' for details.")
 
     root = tk.Tk()
     root.title("SPIDAM")
