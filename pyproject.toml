@@ -17,5 +17,5 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 [project.urls]
-Homepage = " "
-Issues = " "
+Homepage = "https://github.com/ExclusiveDisjunction/CSPFinal"
+Issues = ""
