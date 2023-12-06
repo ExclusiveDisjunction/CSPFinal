@@ -37,6 +37,7 @@ def GraphWave(root: tk.Tk | None, wave: AudioSegment) -> tk.Label:
         Graphs the wave function, and if target is not None, it will output that graph onto the target.
     """
     Log.LogEvent("Began graphing wave.")
+    print(root)
 
     ImgPath = "TotalWaveOutput.png"
 

@@ -1,37 +1,17 @@
 import tkinter as tk
-
-import Log
 from WaveData import GraphWave
 from WaveData import WaveData
 from WaveGrabber import GrabWaveFile
+import Log
+import view
+
 
 waveData = WaveData()
-
 root = None
 
 
-def GrabWaveCommand():
-    Log.LogEvent("Grab Wave Command Invoked", Log.Debug)
-
-    GrabWaveFile(waveData)
-
-    StatsGrid = tk.Frame(root)
-    StatsGrid.grid(row=2, column=0, columnspan=2)
-
-    currentRow = 0
-
-    tk.Label(StatsGrid, text="File Information", font='Arial 16 bold').grid(row=currentRow, column=0, columnspan=2)
-    currentRow += 1
-
-    tk.Label(StatsGrid, text="File Path: ").grid(row=currentRow, column=0)
-    tk.Label(StatsGrid, text=waveData.getPath()).grid(row=currentRow, column=1, columnspan=2)
-    currentRow += 1
-
-    tk.Label(StatsGrid, text="Length: ").grid(row=currentRow, column=0)
-    tk.Label(StatsGrid, text=f"{round(waveData.getData().duration_seconds, 2)} seconds").grid(row=currentRow, column=1)
-    currentRow += 1
-
-    GraphWaveCommand()
+def startGUICommand():
+    view.startGUI(root, waveData)
 
 
 def GraphWaveCommand():
@@ -44,10 +24,12 @@ def GraphWaveCommand():
     targetCanvas.grid(row=4, column=0, columnspan=2)
 
 
-if __name__ == "__main__":
+def buildGUI():
+    GrabWaveFile(waveData)
+
     Log.InitLog(level=Log.Info)
     Log.LogEvent("Starting UI")
-
+    global root
     root = tk.Tk()
     root.title("SPIDAM")
     root.geometry("500x400+400+400")
@@ -58,7 +40,10 @@ if __name__ == "__main__":
     TitleLbl = tk.Label(root, text="SPIDAM Program", font=('Arial 20 bold'))
     SubTitleLbl = tk.Label(root, text="Please select a file to begin")
     # GrabWaveFile sets the data attribute inside waveData obj
-    selfile_button = tk.Button(root, text="Select", command=GrabWaveCommand)
+    selfile_button = tk.Button(root, text="Select", command=startGUICommand)
+
+    startGUICommand()
+    GraphWaveCommand()
 
     TitleLbl.grid(column=0, row=0, columnspan=2)
     SubTitleLbl.grid(column=0, row=1, sticky='W')
