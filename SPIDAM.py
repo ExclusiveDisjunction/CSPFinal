@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from DataAna import DetermineRT60
+from DataAna import ComputeHighestResonance
 
 import Log
 from WaveData import GraphWave
@@ -35,6 +36,10 @@ def GrabWaveCommand():
 
     tk.Label(StatsGrid, text="RT60: ").grid(row = currentRow, column = 0)
     tk.Label(StatsGrid, text=f"{format(DetermineRT60(waveData), '.0e')}").grid(row = currentRow, column = 1)
+
+    tk.Label(StatsGrid, text="Largest Resonant Frequency: ").grid(row = currentRow, column = 0)
+    tk.Label(StatsGrid, text=f"{ComputeHighestResonance(waveData)} Hz").grid(row = currentRow, column = 1)
+
     currentRow += 1
 
     GraphWaveCommand()
