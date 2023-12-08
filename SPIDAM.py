@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from DataAna import DetermineRT60
+
 import Log
 from WaveData import GraphWave
 from WaveData import WaveData
@@ -29,6 +31,10 @@ def GrabWaveCommand():
 
     tk.Label(StatsGrid, text="Length: ").grid(row=currentRow, column=0)
     tk.Label(StatsGrid, text=f"{round(waveData.getData().duration_seconds, 2)} seconds").grid(row=currentRow, column=1)
+    currentRow += 1
+
+    tk.Label(StatsGrid, text="RT60: ").grid(row = currentRow, column = 0)
+    tk.Label(StatsGrid, text=f"{format(DetermineRT60(waveData), '.0e')}").grid(row = currentRow, column = 1)
     currentRow += 1
 
     GraphWaveCommand()
