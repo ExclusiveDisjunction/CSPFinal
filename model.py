@@ -9,7 +9,6 @@ import view
 waveData = WaveData()
 root = None
 
-
 def startGUICommand():
     view.startGUI(root, waveData)
 
