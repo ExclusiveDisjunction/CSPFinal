@@ -1,4 +1,4 @@
-import Log
+import conf.Log
 
 import model
 

@@ -1,11 +1,13 @@
 import WaveData
+
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import find_peaks
-import Log
+
 from scipy.io import wavfile
 import soundfile as sf
 
+import conf.Log as Log
+import conf.Configuration as Conf
 
 def ComputeMidFrequency(file_path):
     # Load the WAV file
@@ -66,7 +68,7 @@ def DeterminePreformance():
     pass
 
 
-def calculate_rt60(WaveData: WaveData):
+def calculate_rt60(WaveData: WaveData.WaveData):
     def find_target_frequency(freqs):
         for x in freqs:
             if x > 1000:
@@ -115,6 +117,16 @@ def calculate_rt60(WaveData: WaveData):
     rt20 = (t[index_of_max_less_5] - t[index_of_max_less_25])[0]
     rt60 = 3 * rt20
     plt.grid()
-    plt.show()
+
+    plt.savefig(Conf.Configuration.RetriveConfiguration("rt60plot"))
     return [int(target_frequency), round(abs(rt60), 2)]
 
+if __name__ == "__main__":
+    Conf.Configuration.Init("setup.cfg")
+    Log.InitLog()
+
+    waveData = WaveData.WaveData()
+    WaveData.GrabWaveFile(waveData, None)
+
+    if (waveData.getData() != None):
+        calculate_rt60(waveData)

@@ -2,7 +2,7 @@ import tkinter as tk
 from WaveData import GraphWave
 from WaveData import WaveData
 from WaveGrabber import GrabWaveFile
-import Log
+import conf.Log
 import view
 
 
@@ -28,6 +28,7 @@ def buildGUI():
 
     Log.InitLog(level=Log.Info)
     Log.LogEvent("Starting UI")
+    
     global root
     root = tk.Tk()
     root.title("SPIDAM")

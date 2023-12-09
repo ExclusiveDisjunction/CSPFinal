@@ -1,5 +1,5 @@
 import tkinter as tk
-import Log
+import conf.Log
 from DataAna import calculate_rt60
 
 

@@ -3,7 +3,7 @@ import tkinter as tk
 from DataAna import DetermineRT60
 from DataAna import ComputeHighestResonance
 
-import Log
+import conf.Log as Log
 from WaveData import GraphWave
 from WaveData import WaveData
 from WaveGrabber import GrabWaveFile

@@ -2,18 +2,20 @@
     This module will read a file that ends with .conf and construct a dictionary of its contents.
 """
 
-import Log
+import conf.Log as Log
 
 class Configuration:
-    def __init__(self, path: str):
-        self.__path = path
+    __path = ""
+    __configurations = {}
+    def Init(path: str):
+        Configuration.__path = path
         Log.LogEvent(f"Opening configuration file \"{path}\"")
-        self.ReadFile()
+        Configuration.ReadFile()
     
-    def ReadFile(self) -> None:
-        self.__configurations = {}
+    def ReadFile() -> None:
+        Configuration.__configurations = {}
 
-        with open(self.__path, "r") as file:        
+        with open(Configuration.__path, "r") as file:        
             line = file.readline()
             firstLine = True
             while line: 
@@ -43,41 +45,41 @@ class Configuration:
                 
                 Name = Name.strip().lower() # For best searches.
                 Value = Value.strip() # For most accurate results.
-                if (self.__configurations.get(Name) != None):
+                if (Configuration.__configurations.get(Name) != None):
                     Log.LogEvent(f"The configuration with name \"{Name}\" is a duplicate, only the first item is kept.", Log.Warning)
                     continue
 
-                self.__configurations.update({Name: Value})
+                Configuration.__configurations.update({Name: Value})
                 Log.LogEvent(f"Configuration file property \"{Name}\" was added sucessfully.", Log.Debug)
             
-            Log.LogEvent(f"Configuration file read, {len(self.__configurations)} configuration(s) were found.")
+            Log.LogEvent(f"Configuration file read, {len(Configuration.__configurations)} configuration(s) were found.")
 
 
-    def RetriveConfiguration(self, name: str) -> str:
+    def RetriveConfiguration(name: str) -> str:
         name = name.strip()
-        Value = self.__configurations.get(name)
+        Value = Configuration.__configurations.get(name)
         if (Value == None):
             Log.LogEvent(f"A configuration of name \"{name}\" was not found.", Log.Warning)
             return None
 
         return Value
 
-    def SetConfiguration(self, name: str, value: str) -> None:
+    def SetConfiguration(name: str, value: str) -> None:
         name = name.strip()
-        Value = self.__configurations.get(name)
+        Value = Configuration.__configurations.get(name)
         if (Value == None):
             Log.LogEvent(f"A configuration of name \"{name}\" was not found.", Log.Warning)
             raise NameError("The name could not be found.")
 
-        self.__configurations[name] = value
+        Configuration.__configurations[name] = value
 
-    def OutputAllConfigurations(self) -> None:
-        for element in self.__configurations:
+    def OutputAllConfigurations() -> None:
+        for element in Configuration.__configurations:
             print("\t", element)
         
 
 if __name__ == "__main__":
     Log.InitLog("configuration_run.log", Log.Debug)
-    conf = Configuration(input("Configuration to test path? "))
+    Configuration.Init(input("Configuration to test path? "))
     print("All configurations found:")
-    conf.OutputAllConfigurations()
+    Configuration.OutputAllConfigurations()

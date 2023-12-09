@@ -4,7 +4,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import numpy as np
 
-import Log
+import conf.Log as Log
 
 class WaveData:
     def __init__(self):
