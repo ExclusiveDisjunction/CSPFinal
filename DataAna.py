@@ -9,6 +9,7 @@ import soundfile as sf
 import conf.Log as Log
 import conf.Configuration as Conf
 
+
 def ComputeMidFrequency(file_path):
     # Load the WAV file
     sample_rate, data = wavfile.read(file_path)
@@ -120,6 +121,7 @@ def calculate_rt60(WaveData: WaveData.WaveData):
 
     plt.savefig(Conf.Configuration.RetriveConfiguration("rt60plot"))
     return [int(target_frequency), round(abs(rt60), 2)]
+
 
 if __name__ == "__main__":
     Conf.Configuration.Init("setup.cfg")

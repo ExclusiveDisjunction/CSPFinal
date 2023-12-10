@@ -2,9 +2,8 @@ import tkinter as tk
 from WaveData import GraphWave
 from WaveData import WaveData
 from WaveGrabber import GrabWaveFile
-import conf.Log
 import view
-
+from conf import Log
 
 waveData = WaveData()
 root = None
