@@ -2,7 +2,7 @@
     This module will read a file that ends with .conf and construct a dictionary of its contents.
 """
 
-import conf.Log as Log
+import Log
 
 class Configuration:
     __path = ""
@@ -15,20 +15,22 @@ class Configuration:
     def ReadFile() -> None:
         Configuration.__configurations = {}
 
-        with open(Configuration.__path, "r") as file:        
-            line = file.readline()
-            firstLine = True
-            while line: 
-                if (not firstLine): # If the first line is true, we dont want to read another line (would skip the first line), so it skips it and sets it to false for all other configurations.
-                    line = file.readline()
-                else:
-                    firstLine = False
+        with open(Configuration.__path, "r") as file:   
+            chunk = file.read()
+            lines = chunk.splitlines()
+            if (len(lines) == 0):
+                Log.LogEvent("Empty configuration file!", Log.Warning)
+                return
 
-                if (len(line) == 0): #blank line
+            for line in lines:                
+                line = None if line == None else line.strip()
+                Log.LogEvent(f"Reading line \"{line}\"", Log.Debug)
+
+                if (line == None or len(line) == 0): #blank line
                     continue
 
                 if (line[0] == "[" and line[len(line)-1] == "]"): #Title Block
-                    Log.LogEvent(f"Begining block \"{line[1:len(line)-2]}\"", Log.Debug)
+                    Log.LogEvent(f"Begining block \"{line[1:len(line)-1]}\"", Log.Debug)
                     continue
 
                 # Split the string by '='
