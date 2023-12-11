@@ -31,7 +31,6 @@ class SPIDAM_App(tk.Tk):
 if __name__ == "__main__":
     Config.Configuration.Init("setup.cfg")
     Log.InitLog(level=Log.Info)
-<<<<<<< HEAD
     Log.LogEvent("Starting UI")
     Log.LogEvent("<SPIDAM Program>  Copyright (C) <2023>  <Hollan Sellers, Zane Wolfe, Emilio Garcia> This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'. This is free software, and you are welcome to redistribute it under certain conditions; type `show c' for details.")
 
@@ -50,8 +49,6 @@ if __name__ == "__main__":
     TitleLbl.grid(column=0, row=0, columnspan=2)
     SubTitleLbl.grid(column=0, row=1,sticky='W')
     selfile_button.grid(column=1, row=1, sticky='E', padx=10)
-=======
->>>>>>> 015fb6668fc70fd3a51fdf953b17a09760beb5dc
 
     App = SPIDAM_App()
     App.mainloop()
