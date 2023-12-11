@@ -6,7 +6,9 @@ import conf.Log as Log
 class Model:
     def __init__(self, Data: WaveData):
         self.Data = Data
-        self.ImageFreqData = { ("All", "", 0.00), ("Low", "", 0.00), ("Mid", "", 0.00), ("High", "", 0,00)}
+        self.Data.Data = None
+        #                       Title, Path, Caption
+        self.ImageFreqData = { ("Total Wave Output", "", "No File Loaded")}
         self.CurrentImage = 0
         Log.LogEvent("Model initiated")
 

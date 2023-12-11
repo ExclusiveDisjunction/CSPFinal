@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 class View(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-
+    
         self.grid_columnconfigure(0, weight=1)
 
         self.LoadHeader()
@@ -56,25 +56,11 @@ class View(tk.Frame):
         currentColumn = 0
 
         # Column 1
-        tk.Label(self.GraphsGrid, text="File Wave Output:").grid(row = currentRow, column = currentColumn)
-        currentRow += 1
-        self.TotalOutputLabel = tk.Label(self.GraphsGrid)
-        self.TotalOutputLabel.grid(row = currentRow, column = currentColumn)
-        currentRow = 1
-        currentColumn += 1
+        self.GraphTitleVar = tk.StringVar(value = "No Info")
+        self.GraphCaptionVar = tk.StringVar(value ="No File Loaded")
 
-        # Column 2
-        tk.Label(self.GraphsGrid, text="Frequencies").grid(row = currentRow, column=currentColumn)
-        currentRow += 1
-
-        self.FrequencyRangeVar = tk.StringVar(value = "None")
-        self.FrequencyRangeLbl = tk.Label(self.GraphsGrid, textvariable=self.FrequencyRangeVar)
-        self.FrequencyRangeLbl.grid(row = currentRow, column = currentColumn)
-        currentRow += 1
-
-        self.RT60Var = tk.StringVar(value="0.00 seconds")
-        self.RT60Lbl = tk.Label(self.GraphsGrid, textvariable=self.RT60Var)
-        self.RT60Lbl.grid(row = currentRow, column = currentColumn)
+        self.GraphTitleLbl = tk.Label(self.GraphsGrid, textvariable=self.GraphTitleVar)
+        self.GraphTitleLbl.grid(row = currentRow, column = currentColumn)
         currentRow += 1
 
         self.GraphsButtonsGrid = tk.Frame(self.GraphsGrid)
@@ -85,10 +71,14 @@ class View(tk.Frame):
         self.GraphsNextImageBttn.grid(row = 0, column = 1)
         currentRow += 1
 
-        self.CurrentImage = tk.Frame(self.GraphsGrid)
+        self.GraphCaptionLbl = tk.Label(self.GraphsGrid, textvariable=self.GraphCaptionVar)
+        self.GraphCaptionLbl.grid(row = currentRow, column = currentColumn)
+        currentRow += 1
+
+        self.CurrentImage = tk.Label(self.GraphsGrid)
         self.CurrentImage.grid(row = currentRow, column = currentColumn)
 
-        currentRow = 1
+        currentRow += 1
         currentColumn += 1
 
     def LoadImageFromPath(self, targetArea: tk.Label, ImgPath: str) -> None:

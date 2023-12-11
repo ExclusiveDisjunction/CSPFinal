@@ -23,22 +23,31 @@ class Controller:
             if self.model.Data.Data is None:
                 return
         
-            # Now that the file is loaded, render the main graph.
-            TotalOutputImg = WaveTool.GraphWave(self.model.Data.Data)
-            self.view.LoadImageFromPath(TotalOutputImg, self.view.TotalOutputLabel)
+            # Now that the file is loaded, render graphs
+            TotalOutputImg = WaveTool.GraphWave(self.model.Data.Data)            
+            DataAna.calculate_rt60(self.model.Data)
+            DataAna.generateRT60Plot()
 
             # Next fill the RT60 values and graphs.
-            RT60Diff = 0.0
-            RT60Low = 0.0
-            RT60Mid = 0.0
-            RT60High = 0.0
+            RT60Diff = DataAna.getRT60Difference()
+            RT60Low = float(DataAna.getRT60("low"))
+            RT60Mid = float(DataAna.getRT60("mid"))
+            RT60High = float(DataAna.getRT60("high"))
 
-            FreqGraphTot = Conf.Configuration.RetriveConfiguration("frequencyGraphPath")
-            FreqGraphLow = Conf.Configuration.RetriveConfiguration("lowFrequencyGraphPath")
-            FreqGraphMid = Conf.Configuration.RetriveConfiguration("midFrequencyGraphPath")
-            FreqGraphHigh = Conf.Configuration.RetriveConfiguration("highFrequencyGraphPath")
+            FreqGraphTot = "output/all.png"
+            FreqGraphLow = "output/rt60plot-250Hz.png"
+            FreqGraphMid = "output/rt60plot-1000Hz.png"
+            FreqGraphHigh = "output/rt60plot-10000Hz.png"
+            OtherChart = "output/rt60bar.png"
 
-            self.model.ImageFreqData = [("All", RT60Diff, FreqGraphTot), ("Low", RT60Low, FreqGraphLow), ("Mid", RT60Mid, FreqGraphMid), ("High", RT60High, FreqGraphHigh)]
+            self.model.ImageFreqData = [ 
+                ("Total Wave Output", TotalOutputImg, ""),
+                ("All Frequencies", FreqGraphTot, f"RT60 is {round(RT60Diff, 2)} seconds"),
+                ("Low Frequencies", FreqGraphLow, f"RT60 is {round(RT60Low, 2)} seconds"),
+                ("Mid Frequencies", FreqGraphMid, f"RT60 is {round(RT60Mid, 2)} seconds"),
+                ("High Frequencies", FreqGraphHigh, f"RT60 is {round(RT60High, 2)} seconds"),
+                ("Frequencies Comparison", OtherChart, "")
+            ]
             self.model.CurrentImage = 0
             self.UpdateImageOnCurrentVal()
 
@@ -69,6 +78,6 @@ class Controller:
             currentData = self.model.ImageFreqData[self.model.CurrentImage]
 
             # Update View.
-            self.view.FrequencyRangeVar.set(currentData[0] + (" Range" if currentData[0] != "All" else " Ranges"))
+            self.view.GraphTitleVar.set(currentData[0])
+            self.view.GraphCaptionVar.set(currentData[2])
             self.view.LoadImageFromPath(self.view.CurrentImage, currentData[1])
-            self.view.RT60Var.set(f"{round(currentData[2], 2)} seconds")
