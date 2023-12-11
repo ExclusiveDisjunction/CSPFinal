@@ -1,6 +1,5 @@
 import tkinter as tk
 
-from DataAna import DetermineRT60
 from DataAna import ComputeHighestResonance
 
 import conf.Log as Log
