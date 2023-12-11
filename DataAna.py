@@ -17,12 +17,12 @@ def getRT60Difference() -> float:
         lines = file.readlines()
 
     rt60Arr = lines[3].split(",")
-    avgRT60 = (float(rt60Arr[0])+float(rt60Arr[1])+float(rt60Arr[2])) / 3.0
+    avgRT60 = (float(rt60Arr[0]) + float(rt60Arr[1]) + float(rt60Arr[2])) / 3.0
     return (avgRT60 - 0.5)
 
 
 def ComputeHighestResonance(waveData: WaveData):
-    sample_rate, data = wavfile.read(waveData.getPath())
+    sample_rate, data = wavfile.read(waveData.Path)
     frequencies, power = welch(data, sample_rate, nperseg=4096)
     dominant_frequency = frequencies[np.argmax(power)]
     return dominant_frequency
@@ -47,6 +47,17 @@ def getRT60(freqType):
         return None
 
 
+def generateRT60Plot():
+    freqTypes = ["low", "mid", "high"]
+    values = [getRT60("low"), getRT60("mid"), getRT60("high")]
+    plt.bar(freqTypes, values, color='skyblue')  # Create the bar chart with specified data and color
+    plt.xlabel('Frequency Types')  # Set the label for the x-axis
+    plt.ylabel('RT60 values')  # Set the label for the y-axis
+    plt.title('RT60 Values at different frequencies')  # Set the title of the bar chart
+    plt.tight_layout()  # Adjust layout to prevent clipping of labels
+    plt.savefig("output/rt60bar.png")
+
+
 def getFreqRange(freqType: str):
     if freqType == "low":
         return [60, 250]
@@ -60,10 +71,8 @@ def getFreqRange(freqType: str):
         return None
 
 
-
 # Call this function to calculate and store the rt60 data of a given frequency!
 def calculate_rt60(WaveData: WaveData.WaveData):
-
     data_in_db_all = []
     indexes = []
 
@@ -87,7 +96,7 @@ def calculate_rt60(WaveData: WaveData.WaveData):
             data_in_db_fun = 10 * np.log10(data_for_frequency)
             return data_in_db_fun
 
-        sample_rate, data = wavfile.read(WaveData.getPath())
+        sample_rate, data = wavfile.read(WaveData.Path)
         spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap("autumn_r"))
 
         data_in_db = frequency_check()
@@ -170,6 +179,8 @@ def calculate_rt60(WaveData: WaveData.WaveData):
 
     # save_img_path = Conf.Configuration.RetriveConfiguration("frequencyGraphPath")
     plt.savefig("output/all.png")
+    plt.clf()
+    generateRT60Plot()
     return None
 
 
