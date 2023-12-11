@@ -29,26 +29,5 @@ class SPIDAM_App(tk.Tk):
         view.SetController(controller)
 
 if __name__ == "__main__":
-    Config.Configuration.Init("setup.cfg")
-    Log.InitLog(level=Log.Info)
-    Log.LogEvent("Starting UI")
-    Log.LogEvent("<SPIDAM Program>  Copyright (C) <2023>  <Hollan Sellers, Zane Wolfe, Emilio Garcia> This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'. This is free software, and you are welcome to redistribute it under certain conditions; type `show c' for details.")
-
-    root = tk.Tk()
-    root.title("SPIDAM")
-    root.geometry("500x400+400+400")
-    root.resizable(True, True)
-
-    root.grid_columnconfigure(0, weight=1)
-
-    TitleLbl = tk.Label(root, text="SPIDAM Program", font=('Arial 20 bold'))
-    SubTitleLbl = tk.Label(root, text="Please select a file to begin")
-    # GrabWaveFile sets the data attribute inside waveData obj
-    selfile_button = tk.Button(root, text="Select", command=GrabWaveCommand)
-
-    TitleLbl.grid(column=0, row=0, columnspan=2)
-    SubTitleLbl.grid(column=0, row=1,sticky='W')
-    selfile_button.grid(column=1, row=1, sticky='E', padx=10)
-
     App = SPIDAM_App()
     App.mainloop()
