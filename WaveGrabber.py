@@ -2,12 +2,11 @@ import pathlib as pl
 from pathlib import Path
 from pydub import AudioSegment
 import os
-import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
 
 from WaveData import WaveData
-import Log
+import conf.Log as Log
 
 # This file will prompt the user for a file, and convert it to a .wav and then return it.
 # NOTE: This file REQUIRES ffmpeg to be installed on the current computer to work correctly. The library pydub requires it to open and decompress files other than .wav.
@@ -54,8 +53,8 @@ def GrabWaveFile(waveData: WaveData, TargetFilePath: Path | None = None) -> Audi
         Log.LogEvent("Wave file converted successfully.")
 
     # Set audio data to obj instead of returning to eventloop
-    waveData.setData(AudFile, str(FilePath))
-    # return AudFile
+    waveData.Data = AudFile
+    waveData.Path = str(FilePath)
     return AudFile
 
 

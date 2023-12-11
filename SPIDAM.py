@@ -1,52 +1,37 @@
-import tkinter as tk
-from tkinter import N, S, E, W, EW
-from tkinter import messagebox
+# SPIDAM.py
+# Entry point for the SPIDAM program.
 
-from WaveGrabber import GrabWaveFile
-from WaveData import GraphWave
+from model import Model
+from view import View
+from controller import Controller
+import tkinter as tk
+
 from WaveData import WaveData
 
-import Log
+import conf.Configuration as Config
+import conf.Log as Log
 
-waveData = WaveData()
+class SPIDAM_App(tk.Tk):
+    def __init__(self):
+        super().__init__()
 
-root = None
+        self.title = "SPDIAM Audio Tool"
+        self.geometry("500x400+400+400")
+        self.resizable(True, True)
 
-def GrabWaveCommand():
-    Log.LogEvent("Grab Wave Command Invoked", Log.Debug)
+        self.waveData = WaveData()
+        model = Model(self.waveData)
 
-    GrabWaveFile(waveData)
+        view = View(self)
+        view.grid(row = 0, column = 0, padx= 10, pady=10)
 
-    StatsGrid = tk.Frame(root)
-    StatsGrid.grid(row = 2, column = 0, columnspan = 2)
-
-    currentRow = 0
-
-    tk.Label(StatsGrid, text="File Information", font=('Arial 16 bold')).grid(row = currentRow, column = 0, columnspan = 2)
-    currentRow += 1
-
-    tk.Label(StatsGrid, text="File Path: ").grid(row = currentRow, column = 0)
-    tk.Label(StatsGrid, text=waveData.getPath()).grid(row = currentRow, column=1, columnspan = 2)
-    currentRow += 1
-
-    tk.Label(StatsGrid, text="Length: ").grid(row = currentRow, column = 0)
-    tk.Label(StatsGrid, text=f"{round(waveData.getData().duration_seconds, 2)} seconds").grid(row = currentRow, column = 1)
-    currentRow += 1
-
-    GraphWaveCommand()
-
-def GraphWaveCommand():
-    Log.LogEvent("Graph Wave Command Invoked", Log.Debug)
-
-    if (waveData.getData() == None):
-        return
-
-    targetCanvas = GraphWave(root, waveData.getData())
-    targetCanvas.grid(row = 4, column = 0, columnspan=2)
-
+        controller = Controller(model, view)
+        view.SetController(controller)
 
 if __name__ == "__main__":
+    Config.Configuration.Init("setup.cfg")
     Log.InitLog(level=Log.Info)
+<<<<<<< HEAD
     Log.LogEvent("Starting UI")
     Log.LogEvent("<SPIDAM Program>  Copyright (C) <2023>  <Hollan Sellers, Zane Wolfe, Emilio Garcia> This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'. This is free software, and you are welcome to redistribute it under certain conditions; type `show c' for details.")
 
@@ -65,7 +50,8 @@ if __name__ == "__main__":
     TitleLbl.grid(column=0, row=0, columnspan=2)
     SubTitleLbl.grid(column=0, row=1,sticky='W')
     selfile_button.grid(column=1, row=1, sticky='E', padx=10)
+=======
+>>>>>>> 015fb6668fc70fd3a51fdf953b17a09760beb5dc
 
-    Log.LogEvent("UI Loaded, begining Main Loop.")
-    root.mainloop()
-    Log.LogEvent("Shutdown completed sucessfully.")
+    App = SPIDAM_App()
+    App.mainloop()
