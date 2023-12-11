@@ -21,7 +21,7 @@ def getRT60Difference() -> float:
     return (avgRT60 - 0.5)
 
 
-def ComputeHighestResonance(waveData: WaveData):
+def ComputeHighestResonance(waveData: WaveData.WaveData):
     sample_rate, data = wavfile.read(waveData.Path)
     frequencies, power = welch(data, sample_rate, nperseg=4096)
     dominant_frequency = frequencies[np.argmax(power)]
