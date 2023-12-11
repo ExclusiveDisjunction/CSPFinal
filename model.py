@@ -1,53 +1,20 @@
 import tkinter as tk
-from WaveData import GraphWave
 from WaveData import WaveData
-from WaveGrabber import GrabWaveFile
-import view
-from conf import Log
 
-waveData = WaveData()
-root = None
+import conf.Log as Log
 
-def startGUICommand():
-    view.startGUI(root, waveData)
+class Model:
+    def __init__(self, Data: WaveData):
+        self.Data = Data
+        self.ImageFreqData = { ("All", "", 0.00), ("Low", "", 0.00), ("Mid", "", 0.00), ("High", "", 0,00)}
+        self.CurrentImage = 0
+        Log.LogEvent("Model initiated")
 
-
-def GraphWaveCommand():
-    Log.LogEvent("Graph Wave Command Invoked", Log.Debug)
-
-    if (waveData.getData() == None):
-        return
-
-    targetCanvas = GraphWave(root, waveData.getData())
-    targetCanvas.grid(row=4, column=0, columnspan=2)
-
-
-def buildGUI():
-    GrabWaveFile(waveData)
-
-    Log.InitLog(level=Log.Info)
-    Log.LogEvent("Starting UI")
+    @property
+    def Data(self):
+        return self.__data
     
-    global root
-    root = tk.Tk()
-    root.title("SPIDAM")
-    root.geometry("500x400+400+400")
-    root.resizable(True, True)
-
-    root.grid_columnconfigure(0, weight=1)
-
-    TitleLbl = tk.Label(root, text="SPIDAM Program", font=('Arial 20 bold'))
-    SubTitleLbl = tk.Label(root, text="Please select a file to begin")
-    # GrabWaveFile sets the data attribute inside waveData obj
-    selfile_button = tk.Button(root, text="Select", command=startGUICommand)
-
-    startGUICommand()
-    GraphWaveCommand()
-
-    TitleLbl.grid(column=0, row=0, columnspan=2)
-    SubTitleLbl.grid(column=0, row=1, sticky='W')
-    selfile_button.grid(column=1, row=1, sticky='E', padx=10)
-
-    Log.LogEvent("UI Loaded, begining Main Loop.")
-    root.mainloop()
-    Log.LogEvent("Shutdown completed sucessfully.")
+    @Data.setter
+    def Data(self, value: WaveData):
+        self.__data = value
+        Log.LogEvent("Data in Model was changed.", Log.Debug)

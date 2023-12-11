@@ -2,7 +2,6 @@ import pathlib as pl
 from pathlib import Path
 from pydub import AudioSegment
 import os
-import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
 
@@ -54,8 +53,8 @@ def GrabWaveFile(waveData: WaveData, TargetFilePath: Path | None = None) -> Audi
         Log.LogEvent("Wave file converted successfully.")
 
     # Set audio data to obj instead of returning to eventloop
-    waveData.setData(AudFile, str(FilePath))
-    # return AudFile
+    waveData.Data = AudFile
+    waveData.Path = str(FilePath)
     return AudFile
 
 
