@@ -169,6 +169,8 @@ def calculate_rt60(WaveData: WaveData.WaveData):
     # Do not read the data from here, read it from getRT60
 
     plt.clf()
+    plt.xlabel("Time (s)")
+    plt.ylabel("Power (dB)")
     plt.plot(t, data_in_db_all[0], linewidth=1, alpha=0.7, color="#004bc6")
     plt.plot(t, data_in_db_all[1], linewidth=1, alpha=0.7, color="#c60021")
     plt.plot(t, data_in_db_all[2], linewidth=1, alpha=0.7, color="#38c600")
