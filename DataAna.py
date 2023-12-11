@@ -4,123 +4,171 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from scipy.io import wavfile
-import soundfile as sf
+from scipy.signal import welch
 
 import conf.Log as Log
 import conf.Configuration as Conf
 
 
-def ComputeMidFrequency(file_path):
-    # Load the WAV file
-    sample_rate, data = wavfile.read(file_path)
+# Call this only after RT60 values have been calculated!
+def getRT60Difference() -> float:
+    file_path = "conf/rt60data.txt"
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-    # Calculate FFT
-    frequencies = np.fft.fftfreq(len(data), 1 / sample_rate)
-
-    # Find the midpoint index
-    midpoint_index = len(frequencies) // 2
-    mid_frequency = frequencies[midpoint_index]
-    return mid_frequency
+    rt60Arr = lines[3].split(",")
+    avgRT60 = (float(rt60Arr[0])+float(rt60Arr[1])+float(rt60Arr[2])) / 3.0
+    return (avgRT60 - 0.5)
 
 
-def ComputeLowestFrequency(file_path):
-    sample_rate, data = wavfile.read(file_path)
-
-    # Calculate FFT
-    fft_result = np.fft.fft(data)
-    frequencies = np.fft.fftfreq(len(data), 1 / sample_rate)
-    magnitude_spectrum = np.abs(fft_result)
-
-    # Find the index of the maximum amplitude
-    min_index = np.argmin(magnitude_spectrum)
-    lowest_frequency = frequencies[min_index]
-    return lowest_frequency
+def ComputeHighestResonance(waveData: WaveData):
+    sample_rate, data = wavfile.read(waveData.getPath())
+    frequencies, power = welch(data, sample_rate, nperseg=4096)
+    dominant_frequency = frequencies[np.argmax(power)]
+    return dominant_frequency
 
 
-def ComputeHighestResonance(file_path):
-    sample_rate, data = wavfile.read(file_path)
+# Call this function to get the rt60 data after already calculated!
+def getRT60(freqType):
+    file_path = "conf/rt60data.txt"
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-    # Calculate FFT
-    fft_result = np.fft.fft(data)
-    frequencies = np.fft.fftfreq(len(data), 1 / sample_rate)
-    magnitude_spectrum = np.abs(fft_result)
-
-    # Find the index of the maximum amplitude
-    max_index = np.argmax(magnitude_spectrum)
-    highest_frequency = frequencies[max_index]
-    return highest_frequency
-
-
-def ComputeHighestResonance(WaveData: WaveData):
-    # Load audio file
-    AudioFile = WaveData.getData()
-    if (AudioFile == None):
+    rt60Arr = lines[3].split(",")
+    if freqType == "low":
+        return rt60Arr[0]
+    elif freqType == "mid":
+        return rt60Arr[1]
+    elif freqType == "high":
+        return rt60Arr[2]
+    else:
+        # something went wrong!
+        Log.LogEvent("Invalid frequency type! '" + freqType + "'", Log.Error)
         return None
 
-    signal, sample_rate = AudioFile.raw_data, AudioFile.frame_rate
-    audio_data = np.frombuffer(signal, dtype=np.int16)
 
-    # Calculate the envelope of the signal (absolute value)
-    envelope = np.abs(audio_data, dtype=np.int16)
-    return np.max(envelope)
+def getFreqRange(freqType: str):
+    if freqType == "low":
+        return [60, 250]
+    elif freqType == "mid":
+        return [0, 1000]
+    elif freqType == "high":
+        return [5, 10000]
+    else:
+        # something went wrong!
+        Log.LogEvent("Invalid frequency type! '" + freqType + "'", Log.Error)
+        return None
 
 
-def DeterminePreformance():
-    pass
 
-
+# Call this function to calculate and store the rt60 data of a given frequency!
 def calculate_rt60(WaveData: WaveData.WaveData):
-    def find_target_frequency(freqs):
-        for x in freqs:
-            if x > 1000:
-                break
-        return x
 
-    def frequency_check():
-        global target_frequency
-        target_frequency = find_target_frequency(freqs)
-        index_of_frequency = np.where(freqs == target_frequency)[0][0]
-        data_for_frequency = spectrum[index_of_frequency]
-        data_in_db_fun = 10 * np.log10(data_for_frequency)
-        return data_in_db_fun
+    data_in_db_all = []
+    indexes = []
 
-    sample_rate, data = wavfile.read(WaveData.getPath())
-    spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap("autumn_r"))
+    for freqType in ["low", "mid", "high"]:
+        freq_range = getFreqRange(freqType)
 
-    data_in_db = frequency_check()
-    plt.figure()
+        def find_target_frequency(freqs):
+            freq_min = freq_range[0]
+            freq_max = freq_range[1]
 
-    plt.plot(t, data_in_db, linewidth=1, alpha=0.7, color="#004bc6")
-    plt.xlabel("Time (s)")
-    plt.ylabel("Power (dB)")
+            for x in freqs:
+                if x > freq_max:
+                    break
+            return x
 
-    index_of_max = np.argmax(data_in_db)
-    value_of_max = data_in_db[index_of_max]
-    plt.plot(t[index_of_max], data_in_db[index_of_max], 'go')
+        def frequency_check():
+            global target_frequency
+            target_frequency = find_target_frequency(freqs)
+            index_of_frequency = np.where(freqs == target_frequency)[0][0]
+            data_for_frequency = spectrum[index_of_frequency]
+            data_in_db_fun = 10 * np.log10(data_for_frequency)
+            return data_in_db_fun
 
-    sliced_array = data_in_db[index_of_max:]
-    value_of_max_less_5 = value_of_max - 5
+        sample_rate, data = wavfile.read(WaveData.getPath())
+        spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap("autumn_r"))
 
-    def find_nearest_value(array, value):
-        array = np.asarray(array)
-        idx = (np.abs(array - value)).argmin()
-        return array[idx]
+        data_in_db = frequency_check()
+        plt.figure()
 
-    value_of_max_less_5 = find_nearest_value(sliced_array, value_of_max_less_5)
-    index_of_max_less_5 = np.where(data_in_db == value_of_max_less_5)
-    plt.plot(t[index_of_max_less_5], data_in_db[index_of_max_less_5], 'yo')
+        plt.plot(t, data_in_db, linewidth=1, alpha=0.7, color="#004bc6")
+        data_in_db_all.append(data_in_db)
 
-    value_of_max_less_25 = value_of_max - 25
-    value_of_max_less_25 = find_nearest_value(sliced_array, value_of_max_less_25)
-    index_of_max_less_25 = np.where(data_in_db == value_of_max_less_25)
-    plt.plot(t[index_of_max_less_25], data_in_db[index_of_max_less_25], 'ro')
+        plt.xlabel("Time (s)")
+        plt.ylabel("Power (dB)")
 
-    rt20 = (t[index_of_max_less_5] - t[index_of_max_less_25])[0]
-    rt60 = 3 * rt20
-    plt.grid()
+        index_of_max = np.argmax(data_in_db)
+        value_of_max = data_in_db[index_of_max]
+        plt.plot(t[index_of_max], data_in_db[index_of_max], 'go')
+        indexes.append(index_of_max)
 
-    plt.savefig(Conf.Configuration.RetriveConfiguration("rt60plot"))
-    return [int(target_frequency), round(abs(rt60), 2)]
+        sliced_array = data_in_db[index_of_max:]
+        value_of_max_less_5 = value_of_max - 5
+
+        def find_nearest_value(array, value):
+            array = np.asarray(array)
+            idx = (np.abs(array - value)).argmin()
+            return array[idx]
+
+        value_of_max_less_5 = find_nearest_value(sliced_array, value_of_max_less_5)
+        index_of_max_less_5 = np.where(data_in_db == value_of_max_less_5)
+        plt.plot(t[index_of_max_less_5], data_in_db[index_of_max_less_5], 'yo')
+        indexes.append(index_of_max_less_5)
+
+        value_of_max_less_25 = value_of_max - 25
+        value_of_max_less_25 = find_nearest_value(sliced_array, value_of_max_less_25)
+        index_of_max_less_25 = np.where(data_in_db == value_of_max_less_25)
+        plt.plot(t[index_of_max_less_25], data_in_db[index_of_max_less_25], 'ro')
+        indexes.append(index_of_max_less_25)
+
+        rt20 = (t[index_of_max_less_5] - t[index_of_max_less_25])[0]
+        rt60 = 3 * rt20
+        plt.grid()
+
+        save_img_path = Conf.Configuration.RetriveConfiguration("rt60plot").split(".")
+        # Removed low range
+        # save_img_path = save_img_path[0] + str(freq_range[0]) + "-" + str(freq_range[1]) + "Hz"
+        save_img_path = save_img_path[0] + "-" + str(freq_range[1]) + "Hz"
+
+        rt60 = round(abs(rt60), 2)
+
+        def writeRT60(file_path):
+            with open(file_path, 'r') as file:
+                lines = file.readlines()
+
+            rt60Arr = lines[3].split(",")
+            if freqType == "low":
+                rt60Arr[0] = rt60
+            elif freqType == "mid":
+                rt60Arr[1] = rt60
+            elif freqType == "high":
+                rt60Arr[2] = rt60
+            else:
+                Log.LogEvent("Invalid frequency type! '" + freqType + "'", Log.Error)
+
+            lines[3] = str(rt60Arr[0]) + ',' + str(rt60Arr[1]) + ',' + str(rt60Arr[2])
+
+            with open(file_path, 'w') as file:
+                file.writelines(lines)
+
+        writeRT60("conf/rt60data.txt")
+
+        plt.savefig(save_img_path)
+        print([int(target_frequency), rt60])
+    # Do not read the data from here, read it from getRT60
+
+    plt.clf()
+    for DATA_IN_DB in data_in_db_all:
+        plt.plot(t, DATA_IN_DB, linewidth=1, alpha=0.7, color="#004bc6")
+        plt.plot(t[indexes[0]], DATA_IN_DB[indexes[0]], 'go')
+        plt.plot(t[indexes[1]], DATA_IN_DB[indexes[1]], 'yo')
+        plt.plot(t[indexes[2]], DATA_IN_DB[indexes[2]], 'ro')
+
+    # save_img_path = Conf.Configuration.RetriveConfiguration("frequencyGraphPath")
+    plt.savefig("output/all.png")
+    return None
 
 
 if __name__ == "__main__":
@@ -130,5 +178,5 @@ if __name__ == "__main__":
     waveData = WaveData.WaveData()
     WaveData.GrabWaveFile(waveData, None)
 
-    if (waveData.getData() != None):
+    if waveData.getData() is not None:
         calculate_rt60(waveData)

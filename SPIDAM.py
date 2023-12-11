@@ -6,6 +6,13 @@ from view import View
 from controller import Controller
 import tkinter as tk
 
+<<<<<<< HEAD
+=======
+from DataAna import ComputeHighestResonance
+
+import conf.Log as Log
+from WaveData import GraphWave
+>>>>>>> 26d86ff2e9b5fa35e3d7e9397d470b60621e1af0
 from WaveData import WaveData
 
 import conf.Configuration as Config
