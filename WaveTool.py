@@ -21,9 +21,8 @@ def GraphWave(wave: AudioSegment) -> str:
         Graphs the wave function and returns the path it outputted to.
     """
     Log.LogEvent("Began graphing wave.")
-    print(root)
 
-    ImgPath = Config.Configuration.RetriveConfiguration("totalWaveOutputPath")
+    ImgPath = "output/TotalWaveOutput.png"
 
     # Graph the wave function
     Log.LogEvent("Graphing wave data now.")

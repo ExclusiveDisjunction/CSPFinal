@@ -87,7 +87,7 @@ def calculate_rt60(WaveData: WaveData.WaveData):
             data_in_db_fun = 10 * np.log10(data_for_frequency)
             return data_in_db_fun
 
-        sample_rate, data = wavfile.read(WaveData.getPath())
+        sample_rate, data = wavfile.read(WaveData.Path)
         spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap("autumn_r"))
 
         data_in_db = frequency_check()
