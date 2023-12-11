@@ -160,8 +160,10 @@ def calculate_rt60(WaveData: WaveData.WaveData):
     # Do not read the data from here, read it from getRT60
 
     plt.clf()
+    plt.plot(t, data_in_db_all[0], linewidth=1, alpha=0.7, color="#004bc6")
+    plt.plot(t, data_in_db_all[1], linewidth=1, alpha=0.7, color="#c60021")
+    plt.plot(t, data_in_db_all[2], linewidth=1, alpha=0.7, color="#38c600")
     for DATA_IN_DB in data_in_db_all:
-        plt.plot(t, DATA_IN_DB, linewidth=1, alpha=0.7, color="#004bc6")
         plt.plot(t[indexes[0]], DATA_IN_DB[indexes[0]], 'go')
         plt.plot(t[indexes[1]], DATA_IN_DB[indexes[1]], 'yo')
         plt.plot(t[indexes[2]], DATA_IN_DB[indexes[2]], 'ro')
