@@ -39,14 +39,23 @@ class View(tk.Frame):
 
         self.FilePathVar = tk.StringVar(value = "[No File Loaded]")
         self.FileLenVar = tk.StringVar(value = "0.00 seconds")
+        self.ResonantFreqVar = tk.StringVar(value = "0 Hz")
+        self.RT60DiffVar = tk.StringVar(value = "0 seconds")
 
         tk.Label(self.StatsGrid, text="File Path: ").grid(row=currentRow, column=0)
-        tk.Label(self.StatsGrid, textvariable=self.FilePathVar).grid(row=currentRow, column=1, columnspan=2)
+        tk.Label(self.StatsGrid, textvariable=self.FilePathVar).grid(row=currentRow, column=1)
         currentRow += 1
 
         tk.Label(self.StatsGrid, text="Length: ").grid(row=currentRow, column=0)
         tk.Label(self.StatsGrid, textvariable=self.FileLenVar).grid(row=currentRow, column=1)
         currentRow += 1
+
+        tk.Label(self.StatsGrid, text="Resonant Frequency: ").grid(row = currentRow, column = 0)
+        tk.Label(self.StatsGrid, textvariable=self.ResonantFreqVar).grid(row = currentRow, column = 1)
+        currentRow += 1
+
+        tk.Label(self.StatsGrid, text="RT60 Difference: ").grid(row = currentRow, column = 0)
+        tk.Label(self.StatsGrid, textvariable=self.RT60DiffVar).grid(row = currentRow, column = 1)
 
     def LoadGraphsGrids(self):
         self.GraphsGrid = tk.Frame(self)

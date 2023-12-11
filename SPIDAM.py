@@ -11,6 +11,9 @@ from WaveData import WaveData
 import conf.Configuration as Config
 import conf.Log as Log
 
+import conf.Configuration as Config
+import conf.Log as Log
+
 class SPIDAM_App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -29,5 +32,8 @@ class SPIDAM_App(tk.Tk):
         view.SetController(controller)
 
 if __name__ == "__main__":
+    Config.Configuration.Init("setup.cfg")
+    Log.InitLog()
+
     App = SPIDAM_App()
     App.mainloop()

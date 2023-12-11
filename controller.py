@@ -42,7 +42,7 @@ class Controller:
 
             self.model.ImageFreqData = [ 
                 ("Total Wave Output", TotalOutputImg, ""),
-                ("All Frequencies", FreqGraphTot, f"RT60 is {round(RT60Diff, 2)} seconds"),
+                ("All Frequencies", FreqGraphTot, f"RT60 Difference is {round(RT60Diff, 2)} seconds"),
                 ("Low Frequencies", FreqGraphLow, f"RT60 is {round(RT60Low, 2)} seconds"),
                 ("Mid Frequencies", FreqGraphMid, f"RT60 is {round(RT60Mid, 2)} seconds"),
                 ("High Frequencies", FreqGraphHigh, f"RT60 is {round(RT60High, 2)} seconds"),
@@ -54,6 +54,9 @@ class Controller:
             # Update Stats
             self.view.FilePathVar.set(self.model.Data.Path)
             self.view.FileLenVar.set(f"{round(self.model.Data.Data.duration_seconds, 2)} seconds")
+            resStr = str(DataAna.ComputeHighestResonance(self.model.Data)).format(".0e")
+            self.view.ResonantFreqVar.set(value = f"{resStr} Hz")
+            self.view.RT60DiffVar.set(value = f"{round(RT60Diff, 2)} seconds")
 
     def CycleNextFreqImage(self):
         if self.model and self.view:
@@ -64,7 +67,7 @@ class Controller:
             # Update data and then select data.
             self.model.CurrentImage = currentIndex
             self.UpdateImageOnCurrentVal()            
-    def CycleNextFreqImage(self):
+    def CyclePrevFreqImage(self):
         if self.model and self.view:
             # First increment the index
             currentIndex = self.model.CurrentImage - 1
