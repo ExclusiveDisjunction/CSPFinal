@@ -26,6 +26,7 @@ class Controller:
             # Now that the file is loaded, render graphs
             TotalOutputImg = WaveTool.GraphWave(self.model.Data.Data)            
             DataAna.calculate_rt60(self.model.Data)
+            DataAna.generateRT60Plot()
 
             # Next fill the RT60 values and graphs.
             RT60Diff = DataAna.getRT60Difference()
