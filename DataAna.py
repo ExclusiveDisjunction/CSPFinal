@@ -17,12 +17,12 @@ def getRT60Difference() -> float:
         lines = file.readlines()
 
     rt60Arr = lines[3].split(",")
-    avgRT60 = (float(rt60Arr[0])+float(rt60Arr[1])+float(rt60Arr[2])) / 3.0
+    avgRT60 = (float(rt60Arr[0]) + float(rt60Arr[1]) + float(rt60Arr[2])) / 3.0
     return (avgRT60 - 0.5)
 
 
 def ComputeHighestResonance(waveData: WaveData):
-    sample_rate, data = wavfile.read(waveData.getPath())
+    sample_rate, data = wavfile.read(waveData.Path)
     frequencies, power = welch(data, sample_rate, nperseg=4096)
     dominant_frequency = frequencies[np.argmax(power)]
     return dominant_frequency
@@ -47,6 +47,17 @@ def getRT60(freqType):
         return None
 
 
+def generateRT60Plot():
+    freqTypes = ["low", "mid", "high"]
+    values = [getRT60("low"), getRT60("mid"), getRT60("high")]
+    plt.bar(freqTypes, values, color='skyblue')  # Create the bar chart with specified data and color
+    plt.xlabel('Frequency Types')  # Set the label for the x-axis
+    plt.ylabel('RT60 values')  # Set the label for the y-axis
+    plt.title('RT60 Values at different frequencies')  # Set the title of the bar chart
+    plt.tight_layout()  # Adjust layout to prevent clipping of labels
+    plt.savefig("output/rt60bar.png")
+
+
 def getFreqRange(freqType: str):
     if freqType == "low":
         return [60, 250]
@@ -60,10 +71,8 @@ def getFreqRange(freqType: str):
         return None
 
 
-
 # Call this function to calculate and store the rt60 data of a given frequency!
 def calculate_rt60(WaveData: WaveData.WaveData):
-
     data_in_db_all = []
     indexes = []
 
@@ -160,14 +169,20 @@ def calculate_rt60(WaveData: WaveData.WaveData):
     # Do not read the data from here, read it from getRT60
 
     plt.clf()
+    plt.xlabel("Time (s)")
+    plt.ylabel("Power (dB)")
+    plt.plot(t, data_in_db_all[0], linewidth=1, alpha=0.7, color="#004bc6")
+    plt.plot(t, data_in_db_all[1], linewidth=1, alpha=0.7, color="#c60021")
+    plt.plot(t, data_in_db_all[2], linewidth=1, alpha=0.7, color="#38c600")
     for DATA_IN_DB in data_in_db_all:
-        plt.plot(t, DATA_IN_DB, linewidth=1, alpha=0.7, color="#004bc6")
         plt.plot(t[indexes[0]], DATA_IN_DB[indexes[0]], 'go')
         plt.plot(t[indexes[1]], DATA_IN_DB[indexes[1]], 'yo')
         plt.plot(t[indexes[2]], DATA_IN_DB[indexes[2]], 'ro')
 
     # save_img_path = Conf.Configuration.RetriveConfiguration("frequencyGraphPath")
     plt.savefig("output/all.png")
+    plt.clf()
+    generateRT60Plot()
     return None
 
 
