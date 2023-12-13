@@ -5,6 +5,7 @@ from model import Model
 from view import View
 from controller import Controller
 import tkinter as tk
+import os
 
 from WaveData import WaveData
 
@@ -32,6 +33,9 @@ class SPIDAM_App(tk.Tk):
         view.SetController(controller)
 
 if __name__ == "__main__":
+    if (os.path.exists("output")):
+        os.mkdir("output")
+
     Config.Configuration.Init("setup.cfg")
     Log.InitLog()
 

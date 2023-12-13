@@ -1,8 +1,5 @@
-Requires:
-
-    1. pydub
-    2. ffmpeg
-    3. Mathplotlib
-    4. Numpy
-    5. PIL
-    6. Logger
+pydub
+matplotlib
+numpy
+Pillow
+PathLib
